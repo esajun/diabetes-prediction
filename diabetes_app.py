@@ -139,7 +139,7 @@ with st.form("prediction_form"):
         
 
     st.markdown("")
-    submitted = st.form_submit_button("🔍 Prediksi Risiko Diabetes", use_container_width=True, type="primary")
+    submitted = st.form_submit_button("Prediksi Risiko Diabetes", use_container_width=True, type="primary")
 
 # Prediction 
 if submitted:
