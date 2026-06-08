@@ -263,15 +263,6 @@ with tab4:
         num_cols = df.select_dtypes(include=np.number).columns
         corr = df[num_cols].corr()
         
-        st.markdown("""
-        <div style='
-            background: #d1fae5;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #10b981;
-            margin-bottom: 15px;
-        '>
-        """, unsafe_allow_html=True)
         
         # Diabetes distribution
         not_diab = (df["Diabetes_binary"] == 0).sum()
@@ -280,34 +271,11 @@ with tab4:
         st.write(f"- Tidak Diabetes: {not_diab:,} ({not_diab/len(df)*100:.1f}%)")
         st.write(f"- Diabetes: {diab:,} ({diab/len(df)*100:.1f}%)")
         
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div style='
-            background: #fef3c7;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #f59e0b;
-            margin-bottom: 15px;
-        '>
-        """, unsafe_allow_html=True)
-        
         # BMI insights
         bmi_means = df.groupby("Diabetes_binary")["BMI"].mean().to_dict()
         st.write(f"**⚖️ Rata-rata BMI:**")
         st.write(f"- Tidak Diabetes: {bmi_means.get(0, 0):.2f}")
         st.write(f"- Diabetes: {bmi_means.get(1, 0):.2f}")
-        
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div style='
-            background: #dbeafe;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #667eea;
-        '>
-        """, unsafe_allow_html=True)
         
         # Top correlations
         if "Diabetes_binary" in corr.columns:
