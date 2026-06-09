@@ -68,6 +68,7 @@ with tab1:
         cols = st.columns(2)
         for col, feature in zip(cols, FEATURES[i:i+2]):
             with col:
+                st.write(feature)
                 try:
                     fig, ax = plt.subplots(figsize=(6, 3.5))
                     if feature in ["HighBP", "DiffWalk", "HighChol", "HeartDiseaseorAttack", "GenHlth", "Income", "Age"]:
