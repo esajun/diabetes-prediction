@@ -254,11 +254,12 @@ with tab3:
 
         # Top correlations
         if "Diabetes_binary" in corr.columns:
-            top_corr = corr["Diabetes_binary"].abs().sort_values(ascending=False).head(6)
+            top_corr = corr["Diabetes_binary"].abs().sort_values(ascending=False)
+            # Filter out Diabetes_binary itself and take top 5
+            top_corr = top_corr[top_corr.index != "Diabetes_binary"].head(5)
             st.write(f"**🔗 Fitur dengan Korelasi Tertinggi terhadap Diabetes:**")
             for idx, (feat, val) in enumerate(top_corr.items(), 1):
-                if feat != "Diabetes_binary":
-                    st.write(f"{idx}. `{feat}`: {val:.3f}")
+                st.write(f"{idx}. `{feat}`: {val:.3f}")
     except Exception as e:
         st.warning(f"Gagal menghitung insight: {e}")
 
