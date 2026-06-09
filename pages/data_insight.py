@@ -183,67 +183,43 @@ st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("<h2>🎨 Visualisasi Data</h2>", unsafe_allow_html=True)
 
+FEATURES = [
+    'PhysHlth', 'BMI', 'MentHlth', 'Age', 'GenHlth',
+    'HighBP', 'DiffWalk', 'Income', 'HighChol', 'HeartDiseaseorAttack'
+]
+
 # Visualisations dengan styling
-tab1, tab2, tab3, tab4 = st.tabs(["📊 Distribusi", "📈 BMI Analysis", "🔥 Heatmap Korelasi", "💡 Insight"])
+tab1, tab2, tab3 = st.tabs(["📊 Distribusi", "🔥 Heatmap Korelasi", "💡 Insight"])
 
 with tab1:
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("<h4>Distribusi Diabetes</h4>", unsafe_allow_html=True)
-        try:
-            fig, ax = plt.subplots(figsize=(6, 4))
-            sns.countplot(data=df, x="Diabetes_binary", palette=["#10b981", "#ef4444"], ax=ax)
-            ax.set_xticklabels(["Tidak Diabetes (0)", "Diabetes (1)"])
-            ax.set_title("Distribusi Target: Diabetes vs Tidak Diabetes", fontsize=12, fontweight='bold')
-            ax.set_ylabel("Jumlah Sampel")
-            plt.tight_layout()
-            st.pyplot(fig)
-            plt.close()
-        except Exception as e:
-            st.error(f"Error: {e}")
-    
-    with col2:
-        st.markdown("<h4>Distribusi BMI</h4>", unsafe_allow_html=True)
-        try:
-            fig, ax = plt.subplots(figsize=(6, 4))
-            sns.histplot(df["BMI"].dropna(), bins=30, kde=True, color="#667eea", ax=ax)
-            ax.set_title("Distribusi BMI (Body Mass Index)", fontsize=12, fontweight='bold')
-            ax.set_xlabel("BMI")
-            ax.set_ylabel("Frekuensi")
-            plt.tight_layout()
-            st.pyplot(fig)
-            plt.close()
-        except Exception as e:
-            st.error(f"Error: {e}")
+    st.markdown("<h4>Distribusi Semua Fitur Prediksi</h4>", unsafe_allow_html=True)
+    for i in range(0, len(FEATURES), 2):
+        cols = st.columns(2)
+        for col, feature in zip(cols, FEATURES[i:i+2]):
+            with col:
+                st.markdown(f"<h5>{feature}</h5>", unsafe_allow_html=True)
+                try:
+                    fig, ax = plt.subplots(figsize=(6, 3.5))
+                    # Untuk fitur kategorikal gunakan countplot dengan pemisahan berdasarkan target biner
+                    if feature in ["HighBP", "DiffWalk", "HighChol", "HeartDiseaseorAttack", "GenHlth", "Income", "Age"]:
+                        sns.countplot(x=feature, hue='Diabetes_binary', data=df, palette=["#667eea", "#f59e0b"], ax=ax)
+                        ax.set_xlabel(feature)
+                        ax.set_ylabel("Jumlah")
+                        ax.legend(title='Diabetes', labels=['Tidak (0)', 'Ya (1)'])
+                    else:
+                        # Untuk fitur numerik gunakan histplot terpisah menurut target biner
+                        sns.histplot(data=df, x=feature, hue='Diabetes_binary', bins=30, kde=True, palette=["#667eea", "#f59e0b"], ax=ax, alpha=0.6)
+                        ax.set_xlabel(feature)
+                        ax.set_ylabel("Frekuensi")
+                        ax.legend(title='Diabetes', labels=['Tidak (0)', 'Ya (1)'])
+                    ax.set_title(f"Distribusi {feature}", fontsize=12, fontweight='bold')
+                    plt.tight_layout()
+                    st.pyplot(fig)
+                    plt.close()
+                except Exception as e:
+                    st.error(f"Error pada {feature}: {e}")
 
 with tab2:
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("<h4>BMI berdasarkan Status Diabetes</h4>", unsafe_allow_html=True)
-        try:
-            fig, ax = plt.subplots(figsize=(6, 4))
-            sns.boxplot(data=df, x="Diabetes_binary", y="BMI", palette=["#10b981", "#ef4444"], ax=ax)
-            ax.set_xticklabels(["Tidak Diabetes", "Diabetes"])
-            ax.set_title("Perbandingan BMI: Diabetes vs Tidak", fontsize=12, fontweight='bold')
-            ax.set_ylabel("BMI")
-            plt.tight_layout()
-            st.pyplot(fig)
-            plt.close()
-        except Exception as e:
-            st.error(f"Error: {e}")
-    
-    with col2:
-        st.markdown("<h4>Statistik BMI</h4>", unsafe_allow_html=True)
-        try:
-            bmi_stats = df.groupby("Diabetes_binary")["BMI"].agg(['mean', 'median', 'std', 'min', 'max'])
-            bmi_stats.index = ["Tidak Diabetes", "Diabetes"]
-            st.dataframe(bmi_stats.style.format("{:.2f}"), use_container_width=True)
-        except Exception as e:
-            st.error(f"Error: {e}")
-
-with tab3:
     st.markdown("<h4 style='text-align: center;'>Heatmap Korelasi Fitur Numerik</h4>", unsafe_allow_html=True)
     try:
         num_cols = df.select_dtypes(include=np.number).columns
@@ -257,12 +233,11 @@ with tab3:
     except Exception as e:
         st.error(f"Error: {e}")
 
-with tab4:
+with tab3:
     st.markdown("<h3>💡 Key Insights</h3>", unsafe_allow_html=True)
     try:
         num_cols = df.select_dtypes(include=np.number).columns
         corr = df[num_cols].corr()
-        
         
         # Diabetes distribution
         not_diab = (df["Diabetes_binary"] == 0).sum()
@@ -270,13 +245,13 @@ with tab4:
         st.write(f"**📊 Distribusi Target:**")
         st.write(f"- Tidak Diabetes: {not_diab:,} ({not_diab/len(df)*100:.1f}%)")
         st.write(f"- Diabetes: {diab:,} ({diab/len(df)*100:.1f}%)")
-        
-        # BMI insights
-        bmi_means = df.groupby("Diabetes_binary")["BMI"].mean().to_dict()
-        st.write(f"**⚖️ Rata-rata BMI:**")
-        st.write(f"- Tidak Diabetes: {bmi_means.get(0, 0):.2f}")
-        st.write(f"- Diabetes: {bmi_means.get(1, 0):.2f}")
-        
+
+        # Feature stats by diabetes
+        st.write("**📌 Perbandingan Rata-rata Fitur antara Diabetes dan Tidak Diabetes:**")
+        stats = df.groupby("Diabetes_binary")[FEATURES].mean().T
+        stats.columns = ["Tidak Diabetes", "Diabetes"]
+        st.dataframe(stats.style.format("{:.2f}"), use_container_width=True)
+
         # Top correlations
         if "Diabetes_binary" in corr.columns:
             top_corr = corr["Diabetes_binary"].abs().sort_values(ascending=False).head(6)
@@ -284,9 +259,6 @@ with tab4:
             for idx, (feat, val) in enumerate(top_corr.items(), 1):
                 if feat != "Diabetes_binary":
                     st.write(f"{idx}. `{feat}`: {val:.3f}")
-        
-        st.markdown("</div>", unsafe_allow_html=True)
-        
     except Exception as e:
         st.warning(f"Gagal menghitung insight: {e}")
 
