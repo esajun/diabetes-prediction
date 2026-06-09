@@ -127,6 +127,7 @@ cols = st.columns(4)
 cmaps = ["Blues", "Oranges", "Greens", "Purples"]
 for col, (name, y_pred), cmap in zip(cols, preds.items(), cmaps):
     with col:
+        st.write(name)
         fig, ax = plt.subplots(figsize=(3.5, 3))
         sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d",
                     cmap=cmap, ax=ax, cbar=False)
