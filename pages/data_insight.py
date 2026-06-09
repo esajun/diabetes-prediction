@@ -11,51 +11,26 @@ st.set_page_config(page_title="Data Insight", layout="wide")
 st.markdown("""
 <style>
     [data-testid='stSidebarNav'] {display: none;}
-    
-    /* Page styling */
+
     .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #f8fafc;
     }
-    
-    /* Card styling untuk metrics */
+
     .metric-container {
         background: white;
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        border-left: 4px solid #667eea;
-        animation: slideIn 0.6s ease-out;
+        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        border-left: 4px solid #2563eb;
+        margin-bottom: 18px;
     }
-    
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-    
-    h1, h2 {
-        animation: slideDown 0.6s ease-out;
-    }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+
+    .metric-container.accent-green { border-left-color: #10b981; }
+    .metric-container.accent-orange { border-left-color: #f97316; }
+    .metric-container.accent-red { border-left-color: #ef4444; }
+
+    h1, h2, h3, h4, h5 {
+        color: #0f172a;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -69,16 +44,15 @@ with st.sidebar:
 # Header
 st.markdown("""
 <div style="
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 40px 30px;
-    border-radius: 15px;
-    margin-bottom: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    animation: slideDown 0.6s ease-out;
+    background: #0f172a;
+    padding: 32px 24px;
+    border-radius: 18px;
+    margin-bottom: 26px;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.1);
 ">
-    <h1 style="margin: 0; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">🔍 Data Insight</h1>
-    <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 1em;">
-        Eksplorasi dan visualisasi dataset diabetes secara detail
+    <h1 style="margin: 0; color: white;">🔍 Data Insight</h1>
+    <p style="margin: 10px 0 0 0; color: #cbd5e1; font-size: 1em;">
+        Eksplorasi dan visualisasi dataset diabetes secara detail.
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -202,13 +176,13 @@ with tab1:
                     fig, ax = plt.subplots(figsize=(6, 3.5))
                     # Untuk fitur kategorikal gunakan countplot dengan pemisahan berdasarkan target biner
                     if feature in ["HighBP", "DiffWalk", "HighChol", "HeartDiseaseorAttack", "GenHlth", "Income", "Age"]:
-                        sns.countplot(x=feature, hue='Diabetes_binary', data=df, palette=["#667eea", "#f59e0b"], ax=ax)
+                        sns.countplot(x=feature, hue='Diabetes_binary', data=df, palette=["#2563eb", "#ef4444"], ax=ax)
                         ax.set_xlabel(feature)
                         ax.set_ylabel("Jumlah")
                         ax.legend(title='Diabetes', labels=['Tidak (0)', 'Ya (1)'])
                     else:
                         # Untuk fitur numerik gunakan histplot terpisah menurut target biner
-                        sns.histplot(data=df, x=feature, hue='Diabetes_binary', bins=30, kde=True, palette=["#667eea", "#f59e0b"], ax=ax, alpha=0.6)
+                        sns.histplot(data=df, x=feature, hue='Diabetes_binary', bins=30, kde=True, palette=["#2563eb", "#ef4444"], ax=ax, alpha=0.6)
                         ax.set_xlabel(feature)
                         ax.set_ylabel("Frekuensi")
                         ax.legend(title='Diabetes', labels=['Tidak (0)', 'Ya (1)'])

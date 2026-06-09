@@ -6,45 +6,28 @@ st.set_page_config(page_title="About", layout="wide")
 st.markdown("""
 <style>
     [data-testid='stSidebarNav'] {display: none;}
-    
+
     .main {
-        background: linear-gradient(135deg, #013c58 0%, #00537a 100%);
+        background: #f8fafc;
     }
-    
+
     .about-card {
-        background: #a8e8f9;
+        background: #ffffff;
         padding: 25px;
         border-radius: 16px;
-        box-shadow: 0 12px 30px rgba(1, 60, 88, 0.15);
+        box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
         margin-bottom: 22px;
-        border-left: 6px solid #ffba42;
-        animation: slideIn 0.6s ease-out;
+        border-left: 6px solid #3b82f6;
     }
-    
-    @keyframes slideIn {
-        from {
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+
+    .about-card h2,
+    .about-card h3 {
+        color: #0f172a;
     }
-    
-    @keyframes slideDown {
-        from {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    h1, h2 {
-        animation: slideDown 0.6s ease-out;
+
+    .about-card p,
+    .about-card li {
+        color: #475569;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -58,15 +41,14 @@ with st.sidebar:
 # Header
 st.markdown("""
 <div style="
-    background: linear-gradient(135deg, #013c58 0%, #00537a 100%);
-    padding: 40px 30px;
+    background: #0f172a;
+    padding: 32px 24px;
     border-radius: 18px;
-    margin-bottom: 30px;
-    box-shadow: 0 14px 35px rgba(1, 60, 88, 0.18);
-    animation: slideDown 0.6s ease-out;
+    margin-bottom: 26px;
+    box-shadow: 0 10px 28px rgba(15, 23, 42, 0.1);
 ">
-    <h1 style="margin: 0; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">ℹ️ Tentang Aplikasi</h1>
-    <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 1em;">
+    <h1 style="margin: 0; color: white;">ℹ️ Tentang Aplikasi</h1>
+    <p style="margin: 10px 0 0 0; color: #cbd5e1; font-size: 1em;">
         Dapatkan wawasan kesehatan dengan prediksi risiko diabetes dan inspirasi gaya hidup sehat.
     </p>
 </div>
@@ -188,17 +170,15 @@ st.markdown("<hr>", unsafe_allow_html=True)
 
 st.markdown("""
 <div style="
-    background: #ffd35b;
+    background: #e2e8f0;
     padding: 25px;
     border-radius: 14px;
-    border: 2px solid #ffba42;
+    border: 1px solid #cbd5e1;
     text-align: center;
-    animation: slideIn 0.6s ease-out;
 ">
-    <h3 style="margin-top: 0; color: #013c58;">❤️ Kesehatan adalah Investasi Terbaik</h3>
-    <p style="color: #013c58; font-size: 1.05em;">
+    <h3 style="margin-top: 0; color: #0f172a;">❤️ Kesehatan adalah Investasi Terbaik</h3>
+    <p style="color: #475569; font-size: 1.05em;">
         Mulai dari sekarang, ambil langkah proaktif untuk menjaga kesehatan Anda.
-
         Gunakan aplikasi ini sebagai alat edukasi dan motivasi untuk gaya hidup yang lebih sehat.
     </p>
 </div>
