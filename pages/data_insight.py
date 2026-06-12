@@ -65,16 +65,16 @@ st.subheader("📖 Penjelasan 10 Fitur yang Digunakan Model")
 st.write("""
 | Fitur | Penjelasan |
 |---|---|
-| **PhysHlth** | Jumlah hari kesehatan fisik terganggu dalam 30 hari terakhir (0-30) |
-| **BMI** | Body Mass Index - indeks massa tubuh berdasarkan tinggi dan berat badan |
-| **MentHlth** | Jumlah hari kesehatan mental terganggu dalam 30 hari terakhir (0-30) |
-| **Age** | Kategori usia: 1=18-24, 2=25-29, 3=30-34, 4=35-39, 5=40-44, 6=45-49, 7=50-54, 8=55-59, 9=60-64, 10=65-69, 11=70-74, 12=75-79, 13=80+ tahun |
-| **GenHlth** | Kondisi kesehatan umum: 1=Excellent, 2=Very Good, 3=Good, 4=Fair, 5=Poor |
-| **HighBP** | Tekanan darah tinggi: 0=Tidak, 1=Ya |
-| **DiffWalk** | Kesulitan berjalan atau naik tangga: 0=Tidak, 1=Ya |
-| **Income** | Tingkat pendapatan: 1=<$10rb, 2=$10-15rb, 3=$15-20rb, 4=$20-25rb, 5=$25-35rb, 6=$35-50rb, 7=$50-75rb, 8=>$75rb per tahun |
-| **HighChol** | Kolesterol tinggi: 0=Tidak, 1=Ya |
-| **HeartDiseaseorAttack** | Pernah penyakit jantung koroner atau serangan jantung: 0=Tidak, 1=Ya |
+| PhysHlth | Jumlah hari kesehatan fisik terganggu (0-30) |
+| BMI | Body Mass Index |
+| MentHlth | Jumlah hari kesehatan mental terganggu (0-30) |
+| Age | Kategori usia (1-13) |
+| GenHlth | Kondisi kesehatan umum (1-5) |
+| HighBP | Tekanan darah tinggi (0=Tidak, 1=Ya) |
+| DiffWalk | Kesulitan berjalan (0=Tidak, 1=Ya) |
+| Income | Tingkat pendapatan (1-8) |
+| HighChol | Kolesterol tinggi (0=Tidak, 1=Ya) |
+| HeartDiseaseorAttack | Riwayat penyakit jantung (0=Tidak, 1=Ya) |
 """)
 
 st.divider()
