@@ -18,7 +18,7 @@ with st.sidebar:
     st.page_link("pages/about.py",             label="About")
 
 st.title("📊 Performa Model")
-st.write("Evaluasi dan perbandingan 4 model: Logistic Regression, Decision Tree, Random Forest, dan XGBoost.")
+st.write("Evaluasi dan perbandingan 5 model: Logistic Regression, Decision Tree, Random Forest, XGBoost, dan LightGBM.")
 st.divider()
 
 FEATURES = [
@@ -44,18 +44,20 @@ def train_all_models(dummy):
     from sklearn.tree import DecisionTreeClassifier
     from sklearn.ensemble import RandomForestClassifier
     from xgboost import XGBClassifier
+    from lightgbm import LGBMClassifier
 
     models = {
         "Logistic Regression": LogisticRegression(max_iter=1000),
         "Decision Tree":       DecisionTreeClassifier(random_state=42),
         "Random Forest":       RandomForestClassifier(random_state=42),
         "XGBoost":             joblib.load("diabetes_model.pkl") if os.path.exists("diabetes_model.pkl") else XGBClassifier(n_estimators=100, max_depth=5, learning_rate=0.1, random_state=42),
+        "LightGBM":            LGBMClassifier(random_state=42),
     }
 
     results = {}
     preds   = {}
     for name, m in models.items():
-        if name != "XGBoost":
+        if name not in ["XGBoost"]:
             m.fit(X_train, y_train)
         y_pred = m.predict(X_test)
         y_prob = m.predict_proba(X_test)[:, 1]
@@ -73,16 +75,16 @@ def train_all_models(dummy):
 df = load_data()
 
 if df is None:
-    st.warning("File `diabetes.csv` tidak ditemukan.")
+    st.warning("⚠️ File `diabetes.csv` tidak ditemukan.")
     st.stop()
 
 if not os.path.exists("diabetes_model.pkl"):
-    st.warning("File `diabetes_model.pkl` tidak ditemukan.")
+    st.warning("⚠️ File `diabetes_model.pkl` tidak ditemukan.")
     st.stop()
 
 hasil, preds, y_test = train_all_models("run")
 
-# Best Model: XGBoost 
+# ── Best Model: XGBoost ───────────────────────────────────────────────────────
 st.subheader("XGBoost (Best Model)")
 xgb_row = hasil[hasil["Model"] == "XGBoost"].iloc[0]
 c1, c2, c3, c4, c5 = st.columns(5)
@@ -94,7 +96,7 @@ c5.metric("ROC-AUC",   f"{xgb_row['ROC-AUC']:.4f}")
 
 st.divider()
 
-# Tabel & Grafik 
+# ── Tabel & Grafik ────────────────────────────────────────────────────────────
 col_a, col_b = st.columns(2)
 
 with col_a:
@@ -121,13 +123,12 @@ with col_b:
 
 st.divider()
 
-# Confusion Matrix 4 model 
+# ── Confusion Matrix 5 model ──────────────────────────────────────────────────
 st.subheader("Confusion Matrix")
-cols = st.columns(4)
-cmaps = ["Blues", "Oranges", "Greens", "Purples"]
+cols = st.columns(5)
+cmaps = ["Blues", "Oranges", "Greens", "Purples", "Reds"]
 for col, (name, y_pred), cmap in zip(cols, preds.items(), cmaps):
     with col:
-        st.write(name)
         fig, ax = plt.subplots(figsize=(3.5, 3))
         sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt="d",
                     cmap=cmap, ax=ax, cbar=False)

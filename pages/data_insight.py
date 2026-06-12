@@ -15,7 +15,7 @@ with st.sidebar:
     st.page_link("pages/about.py",             label="About")
 
 st.title("🔍 Data Insight")
-st.write("Eksplorasi dan visualisasi dataset diabetes secara detail.")
+st.write("Eksplorasi dan visualisasi dataset diabetes.")
 st.divider()
 
 @st.cache_data
@@ -25,7 +25,6 @@ def load_data():
         df.reset_index(drop=True, inplace=True)
         return df
     return None
-
 
 df = load_data()
 
@@ -42,12 +41,41 @@ FEATURES = [
     'HighBP', 'DiffWalk', 'Income', 'HighChol', 'HeartDiseaseorAttack'
 ]
 
-# ── Ringkasan ─────────────────────────────────────────────────────────────────
+diabetes_count = (df["Diabetes_binary"] == 1).sum()
+non_diabetes_count = (df["Diabetes_binary"] == 0).sum()
+
 c1, c2, c3, c4 = st.columns(4)
-c1.metric("Total Sampel",        f"{df.shape[0]:,}")
-c2.metric("Total Fitur",         f"{df.shape[1]}")
-c3.metric("Prevalensi Diabetes", f"{df['Diabetes_binary'].mean()*100:.1f}%")
-c4.metric("Missing Data",        f"{df.isnull().sum().sum()}")
+
+c1.metric("Total Sampel", f"{len(df):,}")
+c2.metric("Total Fitur", f"{df.shape[1]}")
+c3.metric(
+    "Diabetes",
+    f"{diabetes_count:,}",
+    f"{diabetes_count/len(df)*100:.1f}%"
+)
+c4.metric(
+    "Non-Diabetes",
+    f"{non_diabetes_count:,}",
+    f"{non_diabetes_count/len(df)*100:.1f}%"
+)
+
+st.divider()
+
+st.subheader("📖 Penjelasan 10 Fitur yang Digunakan Model")
+st.write("""
+| Fitur | Penjelasan |
+|---|---|
+| **PhysHlth** | Jumlah hari kesehatan fisik terganggu dalam 30 hari terakhir (0-30) |
+| **BMI** | Body Mass Index - indeks massa tubuh berdasarkan tinggi dan berat badan |
+| **MentHlth** | Jumlah hari kesehatan mental terganggu dalam 30 hari terakhir (0-30) |
+| **Age** | Kategori usia: 1=18-24, 2=25-29, 3=30-34, 4=35-39, 5=40-44, 6=45-49, 7=50-54, 8=55-59, 9=60-64, 10=65-69, 11=70-74, 12=75-79, 13=80+ tahun |
+| **GenHlth** | Kondisi kesehatan umum: 1=Excellent, 2=Very Good, 3=Good, 4=Fair, 5=Poor |
+| **HighBP** | Tekanan darah tinggi: 0=Tidak, 1=Ya |
+| **DiffWalk** | Kesulitan berjalan atau naik tangga: 0=Tidak, 1=Ya |
+| **Income** | Tingkat pendapatan: 1=<$10rb, 2=$10-15rb, 3=$15-20rb, 4=$20-25rb, 5=$25-35rb, 6=$35-50rb, 7=$50-75rb, 8=>$75rb per tahun |
+| **HighChol** | Kolesterol tinggi: 0=Tidak, 1=Ya |
+| **HeartDiseaseorAttack** | Pernah penyakit jantung koroner atau serangan jantung: 0=Tidak, 1=Ya |
+""")
 
 st.divider()
 
@@ -56,6 +84,34 @@ with st.expander("📋 Lihat Sampel Data Awal (10 baris pertama)"):
 
 with st.expander("📈 Lihat Statistik Deskriptif"):
     st.dataframe(df.describe(), use_container_width=True)
+
+with st.expander("📖 Fitur Dataset"):
+    st.write("""
+| Fitur | Penjelasan |
+|---|---|
+| **Diabetes_binary** | Target: 0 = Tidak diabetes, 1 = Prediabetes/Diabetes |
+| **HighBP** | Tekanan darah tinggi: 0 = Tidak, 1 = Ya |
+| **HighChol** | Kolesterol tinggi: 0 = Tidak, 1 = Ya |
+| **CholCheck** | Cek kolesterol dalam 5 tahun terakhir: 0 = Tidak, 1 = Ya |
+| **BMI** | Body Mass Index |
+| **Smoker** | Pernah merokok >= 100 batang seumur hidup: 0 = Tidak, 1 = Ya |
+| **Stroke** | Pernah terkena stroke: 0 = Tidak, 1 = Ya |
+| **HeartDiseaseorAttack** | Pernah penyakit jantung koroner/serangan jantung: 0 = Tidak, 1 = Ya |
+| **PhysActivity** | Aktif fisik dalam 30 hari terakhir (di luar pekerjaan): 0 = Tidak, 1 = Ya |
+| **Fruits** | Konsumsi buah >= 1x sehari: 0 = Tidak, 1 = Ya |
+| **Veggies** | Konsumsi sayur >= 1x sehari: 0 = Tidak, 1 = Ya |
+| **HvyAlcoholConsump** | Konsumsi alkohol berlebih (pria >=14/minggu, wanita >=7/minggu): 0 = Tidak, 1 = Ya |
+| **AnyHealthcare** | Punya asuransi/jaminan kesehatan: 0 = Tidak, 1 = Ya |
+| **NoDocbcCost** | Tidak ke dokter karena biaya dalam 12 bulan terakhir: 0 = Tidak, 1 = Ya |
+| **GenHlth** | Kesehatan umum: 1 = Excellent, 2 = Very Good, 3 = Good, 4 = Fair, 5 = Poor |
+| **MentHlth** | Hari kesehatan mental buruk dalam 30 hari terakhir (0-30) |
+| **PhysHlth** | Hari sakit/cedera fisik dalam 30 hari terakhir (0-30) |
+| **DiffWalk** | Kesulitan berjalan/naik tangga: 0 = Tidak, 1 = Ya |
+| **Sex** | Jenis kelamin: 0 = Perempuan, 1 = Laki-laki |
+| **Age** | Kategori usia: 1=18-24, 2=25-29, 3=30-34, 4=35-39, 5=40-44, 6=45-49, 7=50-54, 8=55-59, 9=60-64, 10=65-69, 11=70-74, 12=75-79, 13=80+ tahun |
+| **Education** | Tingkat pendidikan: 1 = Tidak sekolah ... 6 = Sarjana ke atas |
+| **Income** | Tingkat pendapatan: 1=<$10rb, 2=$10-15rb, 3=$15-20rb, 4=$20-25rb, 5=$25-35rb, 6=$35-50rb, 7=$50-75rb, 8=>$75rb per tahun |
+""")
 
 st.divider()
 
@@ -68,7 +124,6 @@ with tab1:
         cols = st.columns(2)
         for col, feature in zip(cols, FEATURES[i:i+2]):
             with col:
-                st.write(feature)
                 try:
                     fig, ax = plt.subplots(figsize=(6, 3.5))
                     if feature in ["HighBP", "DiffWalk", "HighChol", "HeartDiseaseorAttack", "GenHlth", "Income", "Age"]:
@@ -129,4 +184,3 @@ st.divider()
 with st.expander("📄 Lihat Tabel Data Lengkap"):
     st.write(f"Total baris: {len(df)}")
     st.dataframe(df, use_container_width=True, height=400)
-

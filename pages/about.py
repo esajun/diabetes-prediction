@@ -35,7 +35,7 @@ with col1:
         "- **Dataset:** diabetes.csv dengan 70+ ribu data penderita dan non-penderita diabetes\n"
         "- **Target:** Kolom `Diabetes_binary` (0 = Tidak, 1 = Ya)\n"
         "- **Fitur:** 10 faktor kesehatan yang paling berpengaruh\n"
-        "- **Model:** XGBoost dengan akurasi tinggi\n"
+        "- **Model:** XGBoost\n"
         "- **Performa:** Akurasi, Precision, Recall, F1-Score, dan ROC-AUC"
     )
 
