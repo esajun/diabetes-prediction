@@ -56,6 +56,18 @@ FEATURE_DESCRIPTIONS = {
     'HeartDiseaseorAttack': 'Penyakit/Serangan Jantung (0=Tidak, 1=Ya)'
 }
 
+# Penjelasan fitur sebagai dropdown
+st.subheader("📖 Penjelasan Fitur yang Digunakan Model")
+opts = ["Semua Fitur"] + FEATURES
+sel = st.selectbox("Pilih fitur untuk melihat penjelasan", opts)
+if sel == "Semua Fitur":
+    table = "| Fitur | Penjelasan |\n|---|---|\n"
+    for f in FEATURES:
+        table += f"| {f} | {FEATURE_DESCRIPTIONS.get(f, '-')} |\n"
+    st.write(table)
+else:
+    st.write(f"**{sel}**: {FEATURE_DESCRIPTIONS.get(sel, '-')}")
+
 # ── Ringkasan ─────────────────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Total Sampel",        f"{df.shape[0]:,}")
