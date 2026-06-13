@@ -43,9 +43,9 @@ model = load_model()
 
 load_dotenv()
 
-client = genai.Client(
-    api_key=os.getenv("GOOGLE_API_KEY")
-)
+api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
+
+client = genai.Client(api_key=api_key)
 
 def age_to_category(age: int) -> int:
     breaks = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80]
