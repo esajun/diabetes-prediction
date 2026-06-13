@@ -1,20 +1,17 @@
 import streamlit as st
 
 st.set_page_config(page_title="About", layout="wide")
-st.markdown("<style>[data-testid='stSidebarNav'] {display: none;}</style>", unsafe_allow_html=True)
 
 with st.sidebar:
-    st.page_link("diabetes_app.py",            label="Prediksi Risiko")
-    st.page_link("pages/model_performance.py", label="Performa Model")
-    st.page_link("pages/data_insight.py",      label="Data Insight")
-    st.page_link("pages/about.py",             label="About")
+    st.page_link("diabetes_app.py",                label="🩺 Prediksi Risiko")
+    st.page_link("pages/model_performance.py",     label="📊 Performa Model")
+    st.page_link("pages/data_insight.py",          label="🔍 Data Insight")
+    st.page_link("pages/about.py",                 label="ℹ️ About")
 
-st.title("ℹ️ About")
+st.title("ℹ️ Tentang Aplikasi")
 st.write("Dapatkan wawasan kesehatan dengan prediksi risiko diabetes dan inspirasi gaya hidup sehat.")
 
-st.divider()
-
-st.header("📋 Tentang Aplikasi Prediksi Risiko Diabetes")
+st.header("📋 Tentang Aplikasi Prediksi Diabetes")
 st.write(
     "Aplikasi ini dibuat untuk membantu Anda memahami potensi risiko diabetes dengan cara yang lebih personal dan positif. "
     "Dengan dukungan model **XGBoost**, aplikasi ini menganalisis data kesehatan Anda untuk memberikan gambaran yang jelas "
@@ -26,8 +23,6 @@ st.write(
     "sederhana untuk mendukung perjalanan kesehatan Anda."
 )
 
-st.divider()
-
 col1, col2 = st.columns(2)
 with col1:
     st.subheader("🔬 Dataset & Model")
@@ -35,7 +30,7 @@ with col1:
         "- **Dataset:** diabetes.csv dengan 70+ ribu data penderita dan non-penderita diabetes\n"
         "- **Target:** Kolom `Diabetes_binary` (0 = Tidak, 1 = Ya)\n"
         "- **Fitur:** 10 faktor kesehatan yang paling berpengaruh\n"
-        "- **Model:** XGBoost\n"
+        "- **Model:** XGBoost dengan akurasi tinggi\n"
         "- **Performa:** Akurasi, Precision, Recall, F1-Score, dan ROC-AUC"
     )
 
@@ -45,10 +40,11 @@ with col2:
         "- 🩺 **Prediksi Risiko** - Hitung risiko diabetes Anda secara real-time\n"
         "- 📊 **Performa Model** - Bandingkan 4 algoritma machine learning\n"
         "- 🔍 **Data Insight** - Eksplorasi data dan visualisasi pola penting\n"
-        "- ℹ️ **About** - Tentang aplikasi prediksi risiko diabetes\n"
+        "- 📈 **Statistik Detail** - Analisis mendalam tentang dataset\n"
+        "- 💡 **Rekomendasi** - Saran kesehatan berdasarkan hasil prediksi"
     )
 
-st.divider()
+st.markdown("---")
 
 st.subheader("🎯 Cara Menggunakan Aplikasi")
 st.markdown(
@@ -59,7 +55,7 @@ st.markdown(
     "5. **Eksplorasi Data** - Kunjungi halaman Data Insight untuk analisis lebih lanjut"
 )
 
-st.divider()
+st.markdown("---")
 
 col1, col2 = st.columns(2)
 with col1:
@@ -83,7 +79,7 @@ with col2:
         "- 🚭 **Hindari Rokok & Alkohol** - Jaga kesehatan organ vital"
     )
 
-st.divider()
+st.markdown("---")
 
 st.subheader("📚 Informasi Lebih Lanjut")
 st.write(
@@ -95,11 +91,10 @@ st.write(
     "yang membantu Anda memahami pola dan hubungan antar faktor kesehatan dalam dataset."
 )
 
-st.divider()
+st.markdown("---")
 
 st.subheader("❤️ Kesehatan adalah Investasi Terbaik")
 st.write(
     "Mulai dari sekarang, ambil langkah proaktif untuk menjaga kesehatan Anda. "
     "Gunakan aplikasi ini sebagai alat edukasi dan motivasi untuk gaya hidup yang lebih sehat."
 )
-
