@@ -1,4 +1,4 @@
- import streamlit as st
+import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,6 +41,20 @@ FEATURES = [
     'PhysHlth', 'BMI', 'MentHlth', 'Age', 'GenHlth',
     'HighBP', 'DiffWalk', 'Smoker', 'HvyAlcoholConsump', 'HighChol', 'HeartDiseaseorAttack'
 ]
+
+FEATURE_DESCRIPTIONS = {
+    'PhysHlth': 'Hari Kesehatan Fisik Terganggu (0-30 hari)',
+    'BMI': 'Body Mass Index',
+    'MentHlth': 'Hari Kesehatan Mental Terganggu (0-30 hari)',
+    'Age': 'Kategori Usia',
+    'GenHlth': 'Kondisi Kesehatan Umum (1=Sangat Baik, 5=Buruk)',
+    'HighBP': 'Tekanan Darah Tinggi (0=Tidak, 1=Ya)',
+    'DiffWalk': 'Kesulitan Berjalan (0=Tidak, 1=Ya)',
+    'Smoker': 'Merokok (0=Tidak, 1=Ya)',
+    'HvyAlcoholConsump': 'Konsumsi Alkohol Berat (0=Tidak, 1=Ya)',
+    'HighChol': 'Kolesterol Tinggi (0=Tidak, 1=Ya)',
+    'HeartDiseaseorAttack': 'Penyakit/Serangan Jantung (0=Tidak, 1=Ya)'
+}
 
 # ── Ringkasan ─────────────────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
@@ -129,5 +143,3 @@ with st.expander("📄 Lihat Tabel Data Lengkap"):
     st.write(f"Total baris: {len(df)}")
     st.dataframe(df, use_container_width=True, height=400)
 
-)}")
-    st.dataframe(df, use_container_width=True, height=400)
