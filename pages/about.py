@@ -2,12 +2,6 @@ import streamlit as st
 
 st.set_page_config(page_title="About", layout="wide")
 
-with st.sidebar:
-    st.page_link("diabetes_app.py",                label="🩺 Prediksi Risiko")
-    st.page_link("pages/model_performance.py",     label="📊 Performa Model")
-    st.page_link("pages/data_insight.py",          label="🔍 Data Insight")
-    st.page_link("pages/about.py",                 label="ℹ️ About")
-
 st.title("ℹ️ Tentang Aplikasi")
 st.write("Dapatkan wawasan kesehatan dengan prediksi risiko diabetes dan inspirasi gaya hidup sehat.")
 
