@@ -2,13 +2,21 @@ import streamlit as st
 
 st.set_page_config(page_title="About", layout="wide")
 
+st.markdown("<style>[data-testid='stSidebarNav'] {display: none;}</style>", unsafe_allow_html=True)
+
+with st.sidebar:
+    st.page_link("diabetes_app.py",            label="Prediksi Risiko")
+    st.page_link("pages/model_performance.py", label="Performa Model")
+    st.page_link("pages/data_insight.py",      label="Data Insight")
+    st.page_link("pages/about.py",             label="About")
+
 st.title("ℹ️ Tentang Aplikasi")
 st.write("Dapatkan wawasan kesehatan dengan prediksi risiko diabetes dan inspirasi gaya hidup sehat.")
 
 st.header("📋 Tentang Aplikasi Prediksi Diabetes")
 st.write(
     "Aplikasi ini dibuat untuk membantu Anda memahami potensi risiko diabetes dengan cara yang lebih personal dan positif. "
-    "Dengan dukungan model **XGBoost**, aplikasi ini menganalisis data kesehatan Anda untuk memberikan gambaran yang jelas "
+    "Dengan dukungan model **LightGBM**, aplikasi ini menganalisis data kesehatan Anda untuk memberikan gambaran yang jelas "
     "tentang kondisi Anda saat ini."
 )
 st.write(
@@ -23,8 +31,8 @@ with col1:
     st.markdown(
         "- **Dataset:** diabetes.csv dengan 70+ ribu data penderita dan non-penderita diabetes\n"
         "- **Target:** Kolom `Diabetes_binary` (0 = Tidak, 1 = Ya)\n"
-        "- **Fitur:** 10 faktor kesehatan yang paling berpengaruh\n"
-        "- **Model:** XGBoost dengan akurasi tinggi\n"
+        "- **Fitur:** 11 faktor kesehatan yang paling berpengaruh\n"
+        "- **Model:** LightGBM dengan akurasi tinggi\n"
         "- **Performa:** Akurasi, Precision, Recall, F1-Score, dan ROC-AUC"
     )
 
@@ -32,7 +40,7 @@ with col2:
     st.subheader("✨ Fitur Utama")
     st.markdown(
         "- 🩺 **Prediksi Risiko** - Hitung risiko diabetes Anda secara real-time\n"
-        "- 📊 **Performa Model** - Bandingkan 4 algoritma machine learning\n"
+        "- 📊 **Performa Model** - Bandingkan 5 model machine learning\n"
         "- 🔍 **Data Insight** - Eksplorasi data dan visualisasi pola penting\n"
         "- 📈 **Statistik Detail** - Analisis mendalam tentang dataset\n"
         "- 💡 **Rekomendasi** - Saran kesehatan berdasarkan hasil prediksi"
