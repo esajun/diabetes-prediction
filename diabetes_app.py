@@ -5,13 +5,16 @@ import joblib
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score
+from google import genai
+from dotenv import load_dotenv
 
 st.set_page_config(page_title="Prediksi Diabetes", layout="wide")
 st.markdown("<style>[data-testid='stSidebarNav'] {display: none;}</style>", unsafe_allow_html=True)
 
 FEATURES = [
     'PhysHlth', 'BMI', 'MentHlth', 'Age', 'GenHlth',
-    'HighBP', 'DiffWalk', 'Income', 'HighChol', 'HeartDiseaseorAttack'
+    'HighBP', 'DiffWalk', 'HighChol', 'HeartDiseaseorAttack',
+    'Smoker', 'HvyAlcoholConsump'
 ]
 
 @st.cache_resource
@@ -33,12 +36,16 @@ def get_model_accuracy():
         mdl    = joblib.load("diabetes_model.pkl")
         y_pred = mdl.predict(X_test)
         return accuracy_score(y_test, y_pred), f1_score(y_test, y_pred)
-    except Exception as e:
-        import traceback
-        st.write(traceback.format_exc())
+    except Exception:
         return None, None
 
 model = load_model()
+
+load_dotenv()
+
+client = genai.Client(
+    api_key=os.getenv("GOOGLE_API_KEY")
+)
 
 def age_to_category(age: int) -> int:
     breaks = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80]
@@ -63,7 +70,6 @@ Model akan menganalisis dan memberikan hasil apakah kamu berisiko tinggi atau re
 """)
 st.divider()
 
-# Input Form 
 with st.form("prediction_form"):
     col1, col2 = st.columns(2)
     input_values = {}
@@ -82,21 +88,6 @@ with st.form("prediction_form"):
         st.caption(f"BMI terhitung: **{bmi_calc:.1f}**")
         input_values["BMI"] = round(bmi_calc, 1)
 
-         # Income
-        inc_map = {
-            "< $10.000/tahun": 1,
-            "$10.000–15.000":  2,
-            "$15.000–20.000":  3,
-            "$20.000–25.000":  4,
-            "$25.000–35.000":  5,
-            "$35.000–50.000":  6,
-            "$50.000–75.000":  7,
-            "> $75.000/tahun": 8,
-        }
-        input_values["Income"] = inc_map[
-            st.selectbox("Pendapatan per Tahun", list(inc_map.keys()), index=4)
-        ]
-
         # PhysHlth
         input_values["PhysHlth"] = st.slider(
             "Berapa hari kesehatan fisik terganggu dalam 30 hari terakhir?", 0, 30, 0)
@@ -104,6 +95,7 @@ with st.form("prediction_form"):
         # MentHlth
         input_values["MentHlth"] = st.slider(
             "Berapa hari kesehatan mental terganggu dalam 30 hari terakhir?", 0, 30, 0)
+
 
     with col2:
         st.subheader("Kondisi Kesehatan")
@@ -135,19 +127,20 @@ with st.form("prediction_form"):
         # DiffWalk
         input_values["DiffWalk"] = st.selectbox(
             "Kesulitan Berjalan / Naik Tangga", [0, 1], format_func=lambda x: "Ya" if x else "Tidak")
-
         
+        # Smoker
+        input_values["Smoker"] = st.selectbox(
+            "Pernah merokok >= 100 batang seumur hidup?", [0, 1], format_func=lambda x: "Ya" if x else "Tidak")
+
+        # HvyAlcoholConsump
+        input_values["HvyAlcoholConsump"] = st.selectbox(
+            "Konsumsi alkohol berlebih?", [0, 1], format_func=lambda x: "Ya" if x else "Tidak")        
 
     st.markdown("")
     submitted = st.form_submit_button("Prediksi Risiko Diabetes", use_container_width=True, type="primary")
 
-# Prediction 
 if submitted:
-    TRAIN_ORDER = [
-    'PhysHlth', 'BMI', 'MentHlth', 'Age', 'GenHlth',
-    'HighBP', 'DiffWalk', 'Income', 'HighChol', 'HeartDiseaseorAttack'
-    ]
-    input_data = pd.DataFrame([input_values])[TRAIN_ORDER]
+    input_data = pd.DataFrame([input_values])[FEATURES]
 
     prediction = model.predict(input_data)[0]
     try:
@@ -164,26 +157,55 @@ if submitted:
         st.error("### Risiko Tinggi Diabetes")
         st.metric("Probabilitas Diabetes", f"{prob_pos:.1f}%")
         st.progress(int(prob_pos))
-        st.warning("""
-💡 **Rekomendasi:**
-- Segera konsultasikan dengan dokter atau tenaga medis
-- Kurangi konsumsi makanan tinggi gula dan karbohidrat sederhana
-- Tingkatkan aktivitas fisik minimal 30 menit per hari
-- Pantau kadar gula darah secara rutin
-- Jaga berat badan agar tetap ideal
-""")
     else:
         st.success("### Risiko Rendah Diabetes")
         st.metric("Probabilitas Tidak Diabetes", f"{prob_neg:.1f}%")
         st.progress(int(prob_neg))
-        st.info("""
-💡 **Tetap jaga kesehatan!**
-- Pertahankan pola makan sehat dan seimbang
-- Rutin berolahraga minimal 3x seminggu
-- Konsumsi buah dan sayur setiap hari
-- Lakukan pemeriksaan kesehatan berkala
-- Hindari kebiasaan merokok dan alkohol berlebih
-""")
+
+        # ===== Gemini Recommendation =====
+
+        prompt = f"""
+        Anda adalah asisten kesehatan.
+
+        Data pengguna:
+        - Usia asli: {usia} tahun
+        - Usia kategori model: {input_values['Age']}
+        - BMI: {input_values['BMI']}
+        - Kesehatan fisik terganggu: {input_values['PhysHlth']} hari
+        - Kesehatan mental terganggu: {input_values['MentHlth']} hari
+        - Kondisi kesehatan umum: {input_values['GenHlth']}
+        - Tekanan darah tinggi: {'Ya' if input_values['HighBP'] else 'Tidak'}
+        - Kolesterol tinggi: {'Ya' if input_values['HighChol'] else 'Tidak'}
+        - Riwayat penyakit jantung: {'Ya' if input_values['HeartDiseaseorAttack'] else 'Tidak'}
+        - Kesulitan berjalan: {'Ya' if input_values['DiffWalk'] else 'Tidak'}
+        - Perokok: {'Ya' if input_values['Smoker'] else 'Tidak'}
+        - Konsumsi alkohol berlebih: {'Ya' if input_values['HvyAlcoholConsump'] else 'Tidak'}
+
+        Hasil model:
+        - Risiko diabetes: {'Tinggi' if prediction == 1 else 'Rendah'}
+        - Probabilitas diabetes: {prob_pos:.1f}%
+
+        Berikan:
+        1. Ringkasan kondisi pengguna
+        2. Faktor risiko utama yang terlihat
+        3. Saran gaya hidup yang sesuai kondisi pengguna
+        4. Disclaimer bahwa ini bukan diagnosis medis
+
+        Gunakan bahasa Indonesia yang sederhana.
+        Maksimal 40 kata.
+        """
+
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=prompt
+            )
+
+            st.subheader("🤖 Rekomendasi Personal")
+            st.write(response.text)
+
+        except Exception as e:
+            st.warning(f"Gagal menghasilkan rekomendasi AI: {e}")
 
     with st.expander("Lihat Data Input"):
         st.dataframe(input_data.T.rename(columns={0: "Nilai"}), use_container_width=True)
@@ -192,14 +214,14 @@ if submitted:
     accuracy, f1 = get_model_accuracy()
     if accuracy is not None:
         st.caption(
-            f"ℹ️ **Tentang Model:** Prediksi menggunakan algoritma **XGBoost** "
+            f"ℹ️ **Tentang Model:** Prediksi menggunakan algoritma **LightGBM** "
             f"yang dilatih dari dataset CDC BRFSS 2015. "
             f"Akurasi model pada data uji: **{accuracy*100:.1f}%** · F1 Score: **{f1*100:.1f}%**. "
             f"Hasil ini merupakan estimasi statistik, bukan diagnosis medis."
         )
     else:
         st.caption(
-            "ℹ️ **Tentang Model:** Prediksi menggunakan algoritma **XGBoost** "
+            "ℹ️ **Tentang Model:** Prediksi menggunakan algoritma **LightGBM** "
             "yang dilatih dari dataset CDC BRFSS 2015. "
             "Hasil ini merupakan estimasi statistik, bukan diagnosis medis."
         )

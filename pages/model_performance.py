@@ -23,7 +23,8 @@ st.divider()
 
 FEATURES = [
     'PhysHlth', 'BMI', 'MentHlth', 'Age', 'GenHlth',
-    'HighBP', 'DiffWalk', 'Income', 'HighChol', 'HeartDiseaseorAttack'
+    'HighBP', 'DiffWalk', 'HighChol', 'HeartDiseaseorAttack',
+    'Smoker', 'HvyAlcoholConsump'
 ]
 
 @st.cache_data
@@ -50,14 +51,14 @@ def train_all_models(dummy):
         "Logistic Regression": LogisticRegression(max_iter=1000),
         "Decision Tree":       DecisionTreeClassifier(random_state=42),
         "Random Forest":       RandomForestClassifier(random_state=42),
-        "XGBoost":             joblib.load("diabetes_model.pkl") if os.path.exists("diabetes_model.pkl") else XGBClassifier(n_estimators=100, max_depth=5, learning_rate=0.1, random_state=42),
-        "LightGBM":            LGBMClassifier(random_state=42),
+        "XGBoost":             XGBClassifier(n_estimators=100, max_depth=5, learning_rate=0.1, random_state=42),
+        "LightGBM":            joblib.load("diabetes_model.pkl") if os.path.exists("diabetes_model.pkl") else LGBMClassifier(random_state=42),
     }
 
     results = {}
     preds   = {}
     for name, m in models.items():
-        if name not in ["XGBoost"]:
+        if name not in ["LightGBM"]:
             m.fit(X_train, y_train)
         y_pred = m.predict(X_test)
         y_prob = m.predict_proba(X_test)[:, 1]
@@ -84,15 +85,15 @@ if not os.path.exists("diabetes_model.pkl"):
 
 hasil, preds, y_test = train_all_models("run")
 
-# ── Best Model: XGBoost ───────────────────────────────────────────────────────
-st.subheader("XGBoost (Best Model)")
-xgb_row = hasil[hasil["Model"] == "XGBoost"].iloc[0]
+# ── Best Model: LightGBM ───────────────────────────────────────────────────────
+st.subheader("LightGBM (Best Model)")
+lgbm_row = hasil[hasil["Model"] == "LightGBM"].iloc[0]
 c1, c2, c3, c4, c5 = st.columns(5)
-c1.metric("Accuracy",  f"{xgb_row['Accuracy']:.4f}")
-c2.metric("Precision", f"{xgb_row['Precision']:.4f}")
-c3.metric("Recall",    f"{xgb_row['Recall']:.4f}")
-c4.metric("F1 Score",  f"{xgb_row['F1 Score']:.4f}")
-c5.metric("ROC-AUC",   f"{xgb_row['ROC-AUC']:.4f}")
+c1.metric("Accuracy",  f"{lgbm_row['Accuracy']:.4f}")
+c2.metric("Precision", f"{lgbm_row['Precision']:.4f}")
+c3.metric("Recall",    f"{lgbm_row['Recall']:.4f}")
+c4.metric("F1 Score",  f"{lgbm_row['F1 Score']:.4f}")
+c5.metric("ROC-AUC",   f"{lgbm_row['ROC-AUC']:.4f}")
 
 st.divider()
 
@@ -142,3 +143,4 @@ for col, (name, y_pred), cmap in zip(cols, preds.items(), cmaps):
 st.divider()
 st.subheader("Fitur yang Digunakan")
 st.code(", ".join(FEATURES))
+
