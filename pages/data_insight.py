@@ -56,24 +56,24 @@ FEATURE_DESCRIPTIONS = {
     'HeartDiseaseorAttack': 'Penyakit/Serangan Jantung (0=Tidak, 1=Ya)'
 }
 
-# Penjelasan fitur sebagai dropdown
-st.subheader("📖 Penjelasan Fitur yang Digunakan Model")
-opts = ["Semua Fitur"] + FEATURES
-sel = st.selectbox("Pilih fitur untuk melihat penjelasan", opts)
-if sel == "Semua Fitur":
-    table = "| Fitur | Penjelasan |\n|---|---|\n"
-    for f in FEATURES:
-        table += f"| {f} | {FEATURE_DESCRIPTIONS.get(f, '-')} |\n"
-    st.write(table)
-else:
-    st.write(f"**{sel}**: {FEATURE_DESCRIPTIONS.get(sel, '-')}")
-
 # ── Ringkasan ─────────────────────────────────────────────────────────────────
 c1, c2, c3, c4 = st.columns(4)
 c1.metric("Total Sampel",        f"{df.shape[0]:,}")
 c2.metric("Total Fitur",         f"{df.shape[1]}")
 c3.metric("Prevalensi Diabetes", f"{df['Diabetes_binary'].mean()*100:.1f}%")
 c4.metric("Missing Data",        f"{df.isnull().sum().sum()}")
+
+st.divider()
+
+# Penjelasan fitur
+st.subheader("📖 Penjelasan Fitur yang Digunakan Model")
+
+feature_data = {
+    "Fitur": FEATURES,
+    "Penjelasan": [FEATURE_DESCRIPTIONS.get(f, "-") for f in FEATURES]
+}
+
+st.table(feature_data)
 
 st.divider()
 
